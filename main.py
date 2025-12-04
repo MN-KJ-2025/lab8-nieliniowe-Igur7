@@ -113,7 +113,11 @@ def bisection(
         return None
     if f(a) * f(b) > 0:
         return None
+    if f(a) == 0:
+        return a, 0
     
+    if f(b) == 0:
+        return b, 0
     iter_count = 0
     while iter_count < max_iter:
         c = (a +b) / 2
@@ -124,7 +128,7 @@ def bisection(
             b = c
         else:
             a = c
-    return None
+    return c, iter_count
 
 
 from typing import Callable
@@ -243,6 +247,7 @@ def newton(
             - Liczba wykonanych iteracji.
         Jeżeli dane wejściowe są niepoprawne funkcja zwraca `None`.
     """
+
     if not isinstance(a, (int, float)) or not isinstance(b, (int, float)):
         return None
     if not isinstance(epsilon, float) or epsilon <= 0:
@@ -255,5 +260,36 @@ def newton(
         return None
     if not isinstance(ddf, Callable):
         return None
+    
+    if f(a) * f(b) > 0:
+        return None
+    
+    if f(a) == 0:
+        return a, 0
+    
+    if f(b) == 0:
+        return b, 0
+    
+    x0 = None
+    if f(a) * ddf(a) > 0:
+        x0 = a
+    elif f(b) * ddf(b) > 0:
+        x0 = b
+    else:
+        return None
+
+    for i in range(1, max_iter + 1):
+        fx = f(x0)
+        dfx = df(x0)
+        if dfx == 0:
+
+            return None
+        x1 = x0 - fx / dfx
+        if abs(f(x1)) < epsilon or abs(x1 - x0) < epsilon:
+            return x1, i
+        x0 = x1
+        if not (a <= x0 <= b):
+            return None
+    return x0, max_iter
 
     
