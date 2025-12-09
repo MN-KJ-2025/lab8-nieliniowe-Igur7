@@ -276,7 +276,7 @@ def newton(
     elif f(b) * ddf(b) > 0:
         x0 = b
     else:
-        return None
+        x0 = (a + b) / 2
 
     for i in range(1, max_iter + 1):
         fx = f(x0)
